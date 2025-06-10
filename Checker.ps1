@@ -1,4 +1,15 @@
-$configJson = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Brevzor/SecurityCheck/refs/heads/main/cfg.json" 
+$cfgUrl = "https://raw.githubusercontent.com/Brevzor/SecurityCheck/main/cfg.json"
+try {
+    $configJson = Invoke-RestMethod -Uri $cfgUrl -ErrorAction Stop
+} catch {
+    $localCfg = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Definition) 'cfg.json'
+    if (Test-Path $localCfg) {
+        $configJson = Get-Content $localCfg | ConvertFrom-Json
+    } else {
+        throw "Unable to load configuration from $cfgUrl or $localCfg"
+    }
+}
+
 $Astra = $configJson.Astra
 $EntryPoint = $configJson.EntryPoint
 $FilesizeH = $configJson.FilesizeH
@@ -7,6 +18,7 @@ $Hydro = $configJson.Hydro
 $Leet = $configJson.Leet
 $Skript = $configJson.Skript
 $ThreatDetection = $configJson.Threat
+$releaseVersion = 'v1.3.3.7'
 
 $ErrorActionPreference = "SilentlyContinue" 
 $dmppath = "C:\Temp\Dump"
@@ -123,14 +135,14 @@ if ((Read-Host "`n`n`nThis program requires 1GB of free disk space on your Syste
         [System.IO.Compression.ZipFile]::ExtractToDirectory($ZipFilePath, $DestinationPath)
     }
     $files = @(
-        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/v1.3.3.7/strings2.exe"; path = "C:\temp\dump\strings2.exe" }
-        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/v1.3.3.7/esedatabaseview.zip"; path = "C:\temp\dump\esedatabaseview.zip" }
-        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/v1.3.3.7/PECmd.zip"; path = "C:\temp\dump\PECmd.zip" }
-        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/v1.3.3.7/EvtxECmd.zip"; path = "C:\temp\dump\EvtxECmd.zip" }
-        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/v1.3.3.7/WxTCmd.zip"; path = "C:\temp\dump\WxTCmd.zip" }
-        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/v1.3.3.7/SBECmd.zip"; path = "C:\temp\dump\SBECmd.zip" }
-        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/v1.3.3.7/RECmd.zip"; path = "C:\temp\dump\RECmd.zip" }
-        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/v1.3.3.7/AppCompatCacheParser.zip"; path = "C:\temp\dump\AppCompatCacheParser.zip" }
+        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/$releaseVersion/strings2.exe"; path = "C:\temp\dump\strings2.exe" }
+        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/$releaseVersion/esedatabaseview.zip"; path = "C:\temp\dump\esedatabaseview.zip" }
+        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/$releaseVersion/PECmd.zip"; path = "C:\temp\dump\PECmd.zip" }
+        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/$releaseVersion/EvtxECmd.zip"; path = "C:\temp\dump\EvtxECmd.zip" }
+        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/$releaseVersion/WxTCmd.zip"; path = "C:\temp\dump\WxTCmd.zip" }
+        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/$releaseVersion/SBECmd.zip"; path = "C:\temp\dump\SBECmd.zip" }
+        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/$releaseVersion/RECmd.zip"; path = "C:\temp\dump\RECmd.zip" }
+        @{url = "https://github.com/Brevzor/SecurityCheck/releases/download/$releaseVersion/AppCompatCacheParser.zip"; path = "C:\temp\dump\AppCompatCacheParser.zip" }
     )
 
     $webClients = @()
